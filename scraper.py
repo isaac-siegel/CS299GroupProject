@@ -1,6 +1,34 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
+import re
+import string
 
+
+pronouns = ['I', 'me', 'we', 'us', 'you',
+            'she', 'he', 'her', 'him', 'it', 'they', 'them',
+            'this', 'that', 'those', 'these']
+
+def concatStrings(strings):
+    result = ""
+    for strng in strings:
+        result += " " + strng
+    return result
+
+def filterString(strng, filterList):
+    result = ""
+    for word in strng.split():
+        keep = True
+        for filt in filterList:
+            if word.lower() == filt.lower():
+                keep = False
+                break
+        if keep:
+            result += " " + word
+    return result
+
+regex = re.compile('[%s]' % re.escape(string.punctuation))
+def removePunctuation(strng):
+    return regex.sub('', strng)
 
 def openPage():
     page = urlopen(Request("https://www.reddit.com/r/worldnews/comments/459bpr/gravitational_waves_from_black_holes_detected/?limit=500", headers={'User-Agent': 'Mozilla'}))
@@ -25,9 +53,13 @@ def driver():
 
     comments = getComments(soup)
 
-    for thing in comments:
-        print(thing)
-    print(len(comments))
+    allComments = concatStrings(comments)
+    allComments = filterString(allComments, pronouns)
+
+    print(allComments)
+
+
+
 
 driver()
 
