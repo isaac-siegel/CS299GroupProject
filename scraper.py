@@ -1,14 +1,34 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 
-page = urlopen(Request("https://www.reddit.com/r/worldnews/comments/459bpr/gravitational_waves_from_black_holes_detected/?limit=500", headers={'User-Agent': 'Mozilla'}))
 
+def openPage():
+    page = urlopen(Request("https://www.reddit.com/r/worldnews/comments/459bpr/gravitational_waves_from_black_holes_detected/?limit=500", headers={'User-Agent': 'Mozilla'}))
+    soup = BeautifulSoup(page, 'html.parser')
+    return soup
 
+def getComments(soup):
+    usertexts = soup.find_all("div", class_="usertext-body")
+    divs = list(map(lambda x: x.find( class_="md"), usertexts))
 
-soup = BeautifulSoup(page, 'html.parser')
-print(type(soup))
-# print(soup.prettify())
+    listOfPs = []
+    for md in divs:
+        oneCommentPs = md.find_all('p')
+        for p in oneCommentPs:
+            listOfPs.append(p.getText())
 
-allParagraphs = soup.find_all('p')
-print(allParagraphs)
+    listOfComments = listOfPs[32:]
+    return listOfComments
+
+def driver():
+    soup = openPage()
+
+    comments = getComments(soup)
+
+    for thing in comments:
+        print(thing)
+    print(len(comments))
+
+driver()
+
 
