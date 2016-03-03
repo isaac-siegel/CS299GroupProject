@@ -1,7 +1,11 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
+from os import path
+from wordcloud import WordCloud
 import re
 import string
+import numpy as np
+from PIL import Image
 
 
 pronouns = ['I', 'me', 'we', 'us', 'you',
@@ -52,11 +56,33 @@ def driver():
     soup = openPage()
 
     comments = getComments(soup)
-    EVERYTHING = ""
-    for thing in comments:
-        EVERYTHING += thing
-    return EVERYTHING
+    text = removePunctuation(concatStrings(comments))
+
+    maskIMG = np.array(Image.open('reddit-mask.png'))
+    wordcloud = WordCloud(background_color='white', mask=maskIMG).generate(text)
+    
+    import matplotlib.pyplot as plt
+    plt.imshow(wordcloud)
+    plt.axis("off")
+
+    
+    plt.show()
+    return 'done'
 
 print(driver())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
