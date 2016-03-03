@@ -52,15 +52,11 @@ def driver():
     soup = openPage()
 
     comments = getComments(soup)
+    EVERYTHING = ""
+    for thing in comments:
+        EVERYTHING += thing
+    return EVERYTHING
 
-    allComments = concatStrings(comments)
-    allComments = filterString(allComments, pronouns)
-
-    print(allComments)
-
-
-
-
-driver()
+print(driver())
 
 
