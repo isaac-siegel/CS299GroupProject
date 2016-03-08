@@ -34,8 +34,8 @@ regex = re.compile('[%s]' % re.escape(string.punctuation))
 def removePunctuation(strng):
     return regex.sub('', strng)
 
-def openPage():
-    page = urlopen(Request("https://www.reddit.com/r/worldnews/comments/459bpr/gravitational_waves_from_black_holes_detected/?limit=500", headers={'User-Agent': 'Mozilla'}))
+def openPage(url):
+    page = urlopen(Request(url, headers={'User-Agent': 'Mozilla'}))
     soup = BeautifulSoup(page, 'html.parser')
     return soup
 
@@ -53,7 +53,18 @@ def getComments(soup):
     return listOfComments
 
 def driver():
-    soup = openPage()
+
+    url = input('copy/pasta reddit url:')
+
+
+    testURL = "https://www.reddit.com/r/worldnews/comments/459bpr/gravitational_waves_from_black_holes_detected/?limit=500"
+
+
+    url += '?limit=500'
+    
+    soup = openPage(url)
+
+    print('Beginning to work. Please ignore the warning that pops up')
 
     comments = getComments(soup)
     text = removePunctuation(concatStrings(comments))
